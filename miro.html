@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Web Page</title>
+    <style>
+        /* 页面整体样式 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 按钮样式 */
+        #toggleIframeButton {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* iframe 容器样式 */
+        #iframeContainer {
+            position: fixed;
+            bottom: 0;
+            left: 900px;
+            width: 33%;
+            height: 90%;
+            display: none;
+            border-top: 1px solid #ccc;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* iframe 样式 */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello, World!</h1>
+    <p>Welcome to your first web page.</p>
+
+    <!-- 按钮，点击显示或隐藏 iframe -->
+    <button id="toggleIframeButton" onclick="toggleIframe()">Toggle iframe</button>
+    
+    <!-- iframe 容器 -->
+    <div id="iframeContainer">
+        <iframe src="https://ae.feishu.cn/cui#appkey=a_33cf9c2d03704888b2db334cac2d39fa&config=eyJjb21tb24iOiB7ImNoYW5uZWxUeXBlIjogIkFOT05ZTU9VU19DVUlfU0RLIiwgInJlc291cmNlVHlwZSI6ICJBSUxZX0NVSV9TREsifX0="></iframe>
+    </div>
+
+    <script>
+        // 切换 iframe 显示/隐藏状态的函数
+        function toggleIframe() {
+            var iframeContainer = document.getElementById('iframeContainer');
+            if (iframeContainer.style.display === 'none' || iframeContainer.style.display === '') {
+                iframeContainer.style.display = 'block';
+            } else {
+                iframeContainer.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
