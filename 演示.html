@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>AGI HUB 模型评估平台</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .platform-title {
+      font-size: 32px;
+      color: #2d3436;
+      font-weight: 600;
+      margin-bottom: 40px;
+      text-align: center;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+    }
+
+    .role-container, .module-container, .process-container {
+      display: flex;
+      gap: 40px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .role-box, .module-box, .process-box {
+      width: 200px; /* 缩小模块宽度 */
+      height: 200px; /* 缩小模块高度 */
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: center;
+    }
+
+    .role-box:hover, .module-box:hover, .process-box:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .role-box h3, .module-box h3, .process-box h3 {
+      font-size: 20px; /* 调整字体大小 */
+      color: #2d3436;
+      margin: 0 0 10px 0;
+    }
+
+    .role-box p, .module-box p, .process-box p {
+      font-size: 12px; /* 调整字体大小 */
+      color: #636e72;
+      line-height: 1.4;
+      margin: 0;
+      max-width: 160px; /* 调整文字宽度 */
+    }
+
+    .process-flow {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 20px; /* 调整模块间距 */
+      margin-top: 20px; /* 调整模块与标题的间距 */
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .arrow {
+      font-size: 24px; /* 调整箭头大小 */
+      color: #333;
+      margin: 0 10px;
+    }
+
+    .video-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .video-container iframe {
+      width: 80%;
+      height: 80%;
+      border: none;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: #fff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    .close-btn:hover {
+      background: #fffdf8;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      font-size: 16px;
+      background: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: background 0.3s;
+    }
+
+    .back-btn:hover {
+      background: #f8f9fa;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="platform-title" id="platform-title">AGI HUB 模型评估平台使用指南</h1>
+    <div class="role-container" id="role-container">
+      <div class="role-box" id="manager">
+        <h3>管理者</h3>
+        <p>选择管理者身份，可以查看搭建模型评估模板与评估流程的教程。</p>
+      </div>
+      <div class="role-box" id="evaluator">
+        <h3>评估员</h3>
+        <p>选择评估员身份，可以查看如何进行评估教程。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 管理者模块 -->
+  <div class="module-container hidden" id="manager-modules">
+    <div class="module-box" id="machine-evaluation">
+      <h3>机评</h3>
+      <p>选择机评模块，查看机评流程。</p>
+    </div>
+    <div class="module-box" id="human-evaluation">
+      <h3>人评</h3>
+      <p>选择人评模块，查看人评流程。</p>
+    </div>
+    <div class="back-btn" onclick="goBackToRoleContainer()">返回</div>
+  </div>
+
+  <!-- 机评流程图 -->
+  <div class="process-container hidden" id="machine-process">
+    <div class="process-flow">
+      <div class="process-box" onclick="openVideo('machine1')">
+        <h3>创建数据集</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('machine2')">
+        <h3>创建机评应用</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('machine3')">
+        <h3>创建工作流</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('machine4')">
+        <h3>创建评估任务</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('machine5')">
+        <h3>获得评估结果</h3>
+      </div>
+    </div>
+    <div class="back-btn" onclick="goBackToManagerModules()">返回</div>
+  </div>
+
+  <!-- 评估员模块 -->
+  <div class="module-container hidden" id="evaluator-modules">
+    <div class="module-box" id="internal-employee">
+      <h3>司内员工</h3>
+      <p>司内员工如何评估</p>
+    </div>
+    <div class="module-box" id="external-employee">
+      <h3>司外员工</h3>
+      <p>司外员工如何评估</p>
+    </div>
+    <div class="back-btn" onclick="goBackToRoleContainer()">返回</div>
+  </div>
+
+  <!-- 人评模块 -->
+  <div class="module-container hidden" id="human-modules">
+    <div class="module-box" id="with-crawling">
+      <h3>有抓取需求</h3>
+      <p>选择有抓取需求，查看相关流程。</p>
+    </div>
+    <div class="module-box" id="without-crawling">
+      <h3>无抓取需求</h3>
+      <p>选择无抓取需求，查看相关流程。</p>
+    </div>
+    <div class="back-btn" onclick="goBackToManagerModules()">返回</div>
+  </div>
+
+  <!-- 有抓取需求流程图 -->
+  <div class="process-container hidden" id="with-crawling-process">
+    <div class="process-flow">
+      <div class="process-box" onclick="openVideo('with1')">
+        <h3>上传评估集</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('with2')">
+        <h3>创建评估模板</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('with3')">
+        <h3>评估报告配置</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('with4')">
+        <h3>创建抓取</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('with5')">
+        <h3>关联评估任务</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('with6')">
+        <h3>送评流程</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('with7')">
+        <h3>监控评估流程</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('with8')">
+        <h3>获得结果</h3>
+      </div>
+    </div>
+    <div class="back-btn" onclick="goBackToHumanModules()">返回</div>
+  </div>
+
+  <!-- 无抓取需求流程图 -->
+  <div class="process-container hidden" id="without-crawling-process">
+    <div class="process-flow">
+      <div class="process-box" onclick="openVideo('without1')">
+        <h3>上传评估集</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('without2')">
+        <h3>创建评估模板</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('without3')">
+        <h3>创建评估任务</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('without4')">
+        <h3>送评流程</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('without5')">
+        <h3>监控评估流程</h3>
+      </div>
+      <div class="arrow">→</div>
+      <div class="process-box" onclick="openVideo('without6')">
+        <h3>获得结果</h3>
+      </div>
+    </div>
+    <div class="back-btn" onclick="goBackToHumanModules()">返回</div>
+  </div>
+
+  <!-- 视频弹窗 -->
+  <div class="video-container hidden" id="video-popup">
+    <div class="close-btn" onclick="closeVideo()">×</div>
+    <iframe src="" frameborder="0"></iframe>
+  </div>
+
+  <script>
+    // 立即切换模块
+    function switchModule(current, next) {
+      if (next.id === 'machine-process' || next.id === 'with-crawling-process' || next.id === 'without-crawling-process') {
+        document.getElementById('platform-title').style.display = 'none'; // 隐藏标题
+      } else {
+        document.getElementById('platform-title').style.display = 'block'; // 显示标题
+      }
+      current.classList.add('hidden');
+      next.classList.remove('hidden');
+    }
+
+    // 返回到角色选择界面
+    function goBackToRoleContainer() {
+      switchModule(document.getElementById('manager-modules'), document.getElementById('role-container'));
+      switchModule(document.getElementById('evaluator-modules'), document.getElementById('role-container'));
+    }
+
+    // 返回到管理者模块
+    function goBackToManagerModules() {
+      switchModule(document.getElementById('machine-process'), document.getElementById('manager-modules'));
+      switchModule(document.getElementById('human-modules'), document.getElementById('manager-modules'));
+    }
+
+    // 返回到人评模块
+    function goBackToHumanModules() {
+      switchModule(document.getElementById('with-crawling-process'), document.getElementById('human-modules'));
+      switchModule(document.getElementById('without-crawling-process'), document.getElementById('human-modules'));
+    }
+
+    // 打开视频
+    function openVideo(videoId) {
+      const videoPopup = document.getElementById('video-popup');
+      const iframe = videoPopup.querySelector('iframe');
+      iframe.src = `https://example.com/videos/${videoId}.mp4`; // 替换为实际视频链接
+      videoPopup.classList.remove('hidden');
+    }
+
+    // 关闭视频
+    function closeVideo() {
+      const videoPopup = document.getElementById('video-popup');
+      const iframe = videoPopup.querySelector('iframe');
+      iframe.src = '';
+      videoPopup.classList.add('hidden');
+    }
+
+    // 点击管理者模块
+    document.getElementById('manager').addEventListener('click', () => {
+      switchModule(document.getElementById('role-container'), document.getElementById('manager-modules'));
+    });
+
+    // 点击评估员模块
+    document.getElementById('evaluator').addEventListener('click', () => {
+      switchModule(document.getElementById('role-container'), document.getElementById('evaluator-modules'));
+    });
+
+    // 点击机评模块
+    document.getElementById('machine-evaluation').addEventListener('click', () => {
+      switchModule(document.getElementById('manager-modules'), document.getElementById('machine-process'));
+    });
+
+    // 点击人评模块
+    document.getElementById('human-evaluation').addEventListener('click', () => {
+      switchModule(document.getElementById('manager-modules'), document.getElementById('human-modules'));
+    });
+
+    // 点击有抓取需求模块
+    document.getElementById('with-crawling').addEventListener('click', () => {
+      switchModule(document.getElementById('human-modules'), document.getElementById('with-crawling-process'));
+    });
+
+    // 点击无抓取需求模块
+    document.getElementById('without-crawling').addEventListener('click', () => {
+      switchModule(document.getElementById('human-modules'), document.getElementById('without-crawling-process'));
+    });
+
+    // 点击司内员工模块
+    document.getElementById('internal-employee').addEventListener('click', () => {
+      openVideo('internal-employee-video'); // 跳转到司内员工视频
+    });
+
+    // 点击司外员工模块
+    document.getElementById('external-employee').addEventListener('click', () => {
+      openVideo('external-employee-video'); // 跳转到司外员工视频
+    });
+
+    // 关闭视频弹窗
+    document.querySelector('.close-btn').addEventListener('click', () => {
+      closeVideo();
+    });
+  </script>
+</body>
+</html>
